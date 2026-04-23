@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little Soul — GitHub Website Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --app-bg: #0a0e17;
+  --app-surface: #111827;
+  --app-surface2: #1a2235;
+  --app-border: #2d3748;
+  --app-text: #e2e8f0;
+  --app-text2: #94a3b8;
+  --app-text3: #64748b;
+  --app-accent: #6366f1;
+  --app-accent2: #4f46e5;
+  --app-accent-pale: #1e1b4b;
+  --app-green: #10b981;
+  --app-red: #ef4444;
+  --app-amber: #f59e0b;
+  --font-ui: 'Inter', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--app-bg);color:var(--app-text);font-family:var(--font-ui);font-size:14px;display:flex;flex-direction:column}
+
+/* ── TOP BAR ── */
+.topbar{background:var(--app-surface);border-bottom:1px solid var(--app-border);padding:0 1rem;display:flex;align-items:center;gap:1rem;height:52px;flex-shrink:0}
+.topbar-logo{font-family:'Orbitron',monospace;font-size:.8rem;color:var(--app-accent);letter-spacing:.15em;font-weight:700}
+.topbar-logo span{color:var(--app-text3);font-size:.6rem;display:block;letter-spacing:.2em;margin-top:1px}
+.topbar-divider{width:1px;height:24px;background:var(--app-border)}
+.topbar-pages{display:flex;gap:.25rem;flex:1;overflow-x:auto}
+.page-tab{font-size:.72rem;padding:.35rem .75rem;border:1px solid var(--app-border);background:transparent;color:var(--app-text2);cursor:pointer;letter-spacing:.05em;white-space:nowrap;transition:.15s;border-radius:3px}
+.page-tab:hover{border-color:var(--app-accent);color:var(--app-text)}
+.page-tab.active{background:var(--app-accent);border-color:var(--app-accent);color:#fff}
+.page-tab-add{font-size:.72rem;padding:.35rem .6rem;border:1px dashed var(--app-border);background:transparent;color:var(--app-text3);cursor:pointer;transition:.15s;border-radius:3px}
+.page-tab-add:hover{border-color:var(--app-accent);color:var(--app-accent)}
+.topbar-actions{display:flex;gap:.5rem;margin-left:auto}
+.btn{font-size:.7rem;padding:.4rem .9rem;border:1px solid;cursor:pointer;letter-spacing:.08em;transition:.15s;font-family:var(--font-ui);border-radius:3px}
+.btn-ghost{background:transparent;border-color:var(--app-border);color:var(--app-text2)}
+.btn-ghost:hover{border-color:var(--app-text2);color:var(--app-text)}
+.btn-primary{background:var(--app-accent);border-color:var(--app-accent);color:#fff}
+.btn-primary:hover{background:var(--app-accent2);border-color:var(--app-accent2)}
+.btn-success{background:var(--app-green);border-color:var(--app-green);color:#fff}
+.btn-success:hover{filter:brightness(1.1)}
+.btn-danger{background:var(--app-red);border-color:var(--app-red);color:#fff}
+
+/* ── MAIN LAYOUT ── */
+.app-body{display:flex;flex:1;overflow:hidden}
+
+/* ── LEFT PANEL ── */
+.left-panel{width:260px;flex-shrink:0;background:var(--app-surface);border-right:1px solid var(--app-border);display:flex;flex-direction:column;overflow:hidden}
+.panel-section{padding:.75rem;border-bottom:1px solid var(--app-border)}
+.panel-label{font-size:.58rem;letter-spacing:.2em;color:var(--app-text3);text-transform:uppercase;margin-bottom:.5rem}
+
+/* Theme Selector */
+.theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:.35rem}
+.theme-btn{padding:.4rem .5rem;border:1px solid var(--app-border);background:var(--app-surface2);cursor:pointer;transition:.15s;border-radius:3px;text-align:left}
+.theme-btn:hover{border-color:var(--app-accent)}
+.theme-btn.active{border-color:var(--app-accent);background:var(--app-accent-pale)}
+.theme-btn-name{font-size:.65rem;color:var(--app-text);font-weight:500;display:block}
+.theme-btn-desc{font-size:.55rem;color:var(--app-text3);display:block;margin-top:1px}
+.theme-swatch{width:100%;height:4px;border-radius:2px;margin-bottom:.35rem}
+
+/* Layout Selector */
+.layout-grid{display:grid;grid-template-columns:1fr 1fr;gap:.35rem}
+.layout-btn{padding:.5rem;border:1px solid var(--app-border);background:var(--app-surface2);cursor:pointer;transition:.15s;border-radius:3px;text-align:center}
+.layout-btn:hover{border-color:var(--app-accent)}
+.layout-btn.active{border-color:var(--app-accent);background:var(--app-accent-pale)}
+.layout-icon{font-size:1.2rem;display:block;margin-bottom:.2rem}
+.layout-name{font-size:.58rem;color:var(--app-text2)}
+
+/* Sections Panel */
+.sections-list{flex:1;overflow-y:auto;padding:.5rem}
+.section-item{background:var(--app-surface2);border:1px solid var(--app-border);border-radius:3px;margin-bottom:.35rem;cursor:grab;transition:.15s}
+.section-item:hover{border-color:var(--app-accent)}
+.section-item.active{border-color:var(--app-accent);background:var(--app-accent-pale)}
+.section-item-header{display:flex;align-items:center;gap:.5rem;padding:.5rem .6rem}
+.section-drag{color:var(--app-text3);font-size:.7rem;cursor:grab}
+.section-type-icon{font-size:.9rem}
+.section-type-name{font-size:.68rem;color:var(--app-text);flex:1}
+.section-actions{display:flex;gap:.25rem}
+.section-action-btn{background:transparent;border:none;color:var(--app-text3);cursor:pointer;font-size:.7rem;padding:.1rem .25rem;transition:.15s;border-radius:2px}
+.section-action-btn:hover{color:var(--app-text);background:var(--app-border)}
+.add-section-btns{display:grid;grid-template-columns:1fr 1fr;gap:.25rem;padding:.5rem}
+.add-section-btn{padding:.35rem;border:1px dashed var(--app-border);background:transparent;color:var(--app-text3);cursor:pointer;font-size:.6rem;letter-spacing:.05em;transition:.15s;border-radius:3px;text-align:center}
+.add-section-btn:hover{border-color:var(--app-accent);color:var(--app-accent)}
+
+/* ── EDITOR / PREVIEW ── */
+.editor-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.editor-toolbar{background:var(--app-surface);border-bottom:1px solid var(--app-border);padding:.4rem .75rem;display:flex;align-items:center;gap:.5rem}
+.editor-mode-btn{font-size:.65rem;padding:.3rem .7rem;border:1px solid var(--app-border);background:transparent;color:var(--app-text2);cursor:pointer;transition:.15s;border-radius:3px}
+.editor-mode-btn.active{background:var(--app-accent);border-color:var(--app-accent);color:#fff}
+.editor-hint{font-size:.6rem;color:var(--app-text3);margin-left:auto;font-family:var(--font-mono)}
+
+/* Preview iframe */
+.preview-wrap{flex:1;overflow:hidden;position:relative}
+.preview-wrap iframe{width:100%;height:100%;border:none;background:#fff}
+
+/* Edit panel */
+.edit-panel{flex:1;overflow-y:auto;padding:1rem}
+.field-group{margin-bottom:1rem}
+.field-label{font-size:.62rem;letter-spacing:.12em;color:var(--app-text2);margin-bottom:.3rem;display:block}
+.field-input{width:100%;background:var(--app-surface2);border:1px solid var(--app-border);color:var(--app-text);padding:.45rem .6rem;font-size:.8rem;font-family:var(--font-ui);border-radius:3px;transition:.15s}
+.field-input:focus{outline:none;border-color:var(--app-accent)}
+.field-textarea{width:100%;background:var(--app-surface2);border:1px solid var(--app-border);color:var(--app-text);padding:.45rem .6rem;font-size:.8rem;font-family:var(--font-ui);border-radius:3px;resize:vertical;min-height:80px;transition:.15s}
+.field-textarea:focus{outline:none;border-color:var(--app-accent)}
+.field-select{width:100%;background:var(--app-surface2);border:1px solid var(--app-border);color:var(--app-text);padding:.45rem .6rem;font-size:.8rem;font-family:var(--font-ui);border-radius:3px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+
+/* ── RIGHT PANEL ── */
+.right-panel{width:240px;flex-shrink:0;background:var(--app-surface);border-left:1px solid var(--app-border);overflow-y:auto}
+.settings-section{padding:.75rem;border-bottom:1px solid var(--app-border)}
+.settings-label{font-size:.58rem;letter-spacing:.2em;color:var(--app-text3);text-transform:uppercase;margin-bottom:.6rem}
+.publish-status{font-size:.65rem;padding:.4rem .6rem;border-radius:3px;margin-bottom:.5rem;font-family:var(--font-mono)}
+.status-idle{background:var(--app-surface2);color:var(--app-text3);border:1px solid var(--app-border)}
+.status-publishing{background:#1a2e1a;color:var(--app-green);border:1px solid var(--app-green)}
+.status-error{background:#2a1a1a;color:var(--app-red);border:1px solid var(--app-red)}
+.status-success{background:#1a2e1a;color:var(--app-green);border:1px solid var(--app-green)}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center}
+.modal{background:var(--app-surface);border:1px solid var(--app-border);border-radius:6px;padding:1.5rem;width:480px;max-width:90vw}
+.modal-title{font-family:'Orbitron',monospace;font-size:.9rem;color:var(--app-text);margin-bottom:1rem;letter-spacing:.1em}
+.modal-actions{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.25rem}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--app-bg)}
+::-webkit-scrollbar-thumb{background:var(--app-border);border-radius:2px}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-logo">LITTLE SOUL<span>GITHUB WEBSITE BUILDER</span></div>
+  <div class="topbar-divider"></div>
+  <div class="topbar-pages" id="pageTabs"></div>
+  <button class="page-tab-add" onclick="addPage()" title="Add page">+ PAGE</button>
+  <div class="topbar-divider"></div>
+  <div class="topbar-actions">
+    <button class="btn btn-ghost" onclick="showSettings()">⚙ SETTINGS</button>
+    <button class="btn btn-ghost" onclick="toggleMode()">👁 PREVIEW</button>
+    <button class="btn btn-success" onclick="publishSite()">↑ PUBLISH</button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="app-body">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+
+    <!-- Theme -->
+    <div class="panel-section">
+      <div class="panel-label">Theme</div>
+      <div class="theme-grid" id="themeGrid"></div>
+    </div>
+
+    <!-- Layout -->
+    <div class="panel-section">
+      <div class="panel-label">Layout</div>
+      <div class="layout-grid" id="layoutGrid">
+        <button class="layout-btn active" data-layout="topnav" onclick="setLayout('topnav',this)">
+          <span class="layout-icon">☰</span>
+          <span class="layout-name">Top Nav</span>
+        </button>
+        <button class="layout-btn" data-layout="sidebar-left" onclick="setLayout('sidebar-left',this)">
+          <span class="layout-icon">◧</span>
+          <span class="layout-name">Sidebar Left</span>
+        </button>
+        <button class="layout-btn" data-layout="sidebar-right" onclick="setLayout('sidebar-right',this)">
+          <span class="layout-icon">◨</span>
+          <span class="layout-name">Sidebar Right</span>
+        </button>
+        <button class="layout-btn" data-layout="fullwidth" onclick="setLayout('fullwidth',this)">
+          <span class="layout-icon">⬜</span>
+          <span class="layout-name">Full Width</span>
+        </button>
+        <button class="layout-btn" data-layout="landing" onclick="setLayout('landing',this)">
+          <span class="layout-icon">⬛</span>
+          <span class="layout-name">Landing</span>
+        </button>
+        <button class="layout-btn" data-layout="docs" onclick="setLayout('docs',this)">
+          <span class="layout-icon">📄</span>
+          <span class="layout-name">Docs</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sections -->
+    <div class="panel-label" style="padding:.5rem .75rem .25rem">Sections</div>
+    <div class="sections-list" id="sectionsList"></div>
+    <div class="add-section-btns">
+      <button class="add-section-btn" onclick="addSection('hero')">+ HERO</button>
+      <button class="add-section-btn" onclick="addSection('text')">+ TEXT</button>
+      <button class="add-section-btn" onclick="addSection('twocol')">+ 2-COL</button>
+      <button class="add-section-btn" onclick="addSection('image')">+ IMAGE</button>
+      <button class="add-section-btn" onclick="addSection('cards')">+ CARDS</button>
+      <button class="add-section-btn" onclick="addSection('cta')">+ CTA</button>
+      <button class="add-section-btn" onclick="addSection('footer')">+ FOOTER</button>
+      <button class="add-section-btn" onclick="addSection('html')">+ HTML</button>
+    </div>
+  </div>
+
+  <!-- EDITOR / PREVIEW -->
+  <div class="editor-area">
+    <div class="editor-toolbar">
+      <button class="editor-mode-btn active" id="editModeBtn" onclick="setEditorMode('edit')">EDIT</button>
+      <button class="editor-mode-btn" id="previewModeBtn" onclick="setEditorMode('preview')">PREVIEW</button>
+      <span class="editor-hint" id="editorHint">Click a section to edit</span>
+    </div>
+    <div class="preview-wrap" id="previewWrap">
+      <iframe id="previewFrame" title="Page Preview"></iframe>
+    </div>
+    <div class="edit-panel" id="editPanel" style="display:none"></div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <div class="settings-section">
+      <div class="settings-label">Site</div>
+      <div class="field-group">
+        <label class="field-label">SITE TITLE</label>
+        <input class="field-input" id="siteTitle" placeholder="My Awesome Site" oninput="updateSiteTitle(this.value)">
+      </div>
+      <div class="field-group">
+        <label class="field-label">TAGLINE</label>
+        <input class="field-input" id="siteTagline" placeholder="A short tagline">
+      </div>
+      <div class="field-group">
+        <label class="field-label">CUSTOM DOMAIN (CNAME)</label>
+        <input class="field-input" id="siteCname" placeholder="yourdomain.com">
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">GitHub</div>
+      <div class="field-group">
+        <label class="field-label">USERNAME</label>
+        <input class="field-input" id="ghUser" placeholder="username">
+      </div>
+      <div class="field-group">
+        <label class="field-label">REPOSITORY</label>
+        <input class="field-input" id="ghRepo" placeholder="username.github.io">
+      </div>
+      <div class="field-group">
+        <label class="field-label">TOKEN</label>
+        <input class="field-input" id="ghToken" type="password" placeholder="ghp_...">
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">Publish</div>
+      <div class="publish-status status-idle" id="publishStatus">READY</div>
+      <button class="btn btn-success" style="width:100%;margin-bottom:.35rem" onclick="publishSite()">↑ PUBLISH ALL PAGES</button>
+      <button class="btn btn-ghost" style="width:100%;font-size:.65rem" onclick="exportZip()">⬇ EXPORT HTML</button>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">Page</div>
+      <div class="field-group">
+        <label class="field-label">PAGE TITLE</label>
+        <input class="field-input" id="pageTitle" placeholder="Home" oninput="updatePageTitle(this.value)">
+      </div>
+      <div class="field-group">
+        <label class="field-label">FILENAME</label>
+        <input class="field-input" id="pageFilename" placeholder="index.html">
+      </div>
+      <div class="field-group">
+        <label class="field-label">META DESCRIPTION</label>
+        <textarea class="field-textarea" id="pageDesc" style="min-height:50px" placeholder="Page description for search engines"></textarea>
+      </div>
+      <button class="btn btn-danger" style="width:100%;font-size:.65rem" onclick="deletePage()">🗑 DELETE PAGE</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" style="display:none">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">SETTINGS</div>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">CANCEL</button>
+      <button class="btn btn-primary" id="modalConfirm" onclick="modalConfirmAction()">CONFIRM</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+const THEMES = {
+  forge:{name:'Forge',desc:'Dark terminal',accent:'#00ff41',bg:'#0d1117',fontLinks:'https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap',vars:{'--bg':'#0d1117','--bg2':'#161b22','--bg3':'#1e2530','--fg':'#e6edf3','--fg2':'#8b949e','--fg3':'#484f58','--accent':'#00ff41','--accent2':'#00c032','--accent3':'#1a3a1a','--border':'#30363d','--nav-bg':'#050a05','--card-bg':'#161b22','--hero-bg':'linear-gradient(135deg,#0d1117 0%,#1a3a1a 100%)','--btn-bg':'#00ff41','--btn-fg':'#0d1117','--link':'#00ff41','--font-display':"'Orbitron',monospace",'--font-body':"'Share Tech Mono',monospace"}},
+  broadsheet:{name:'Broadsheet',desc:'Editorial serif',accent:'#c17f3a',bg:'#faf8f4',fontLinks:'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&family=DM+Mono:wght@400&display=swap',vars:{'--bg':'#faf8f4','--bg2':'#f0ede6','--bg3':'#e8e3db','--fg':'#1a1614','--fg2':'#4a4340','--fg3':'#8a7f78','--accent':'#c17f3a','--accent2':'#9a6128','--accent3':'#f5ead8','--border':'#ddd8d0','--nav-bg':'#1a1614','--card-bg':'#f0ede6','--hero-bg':'linear-gradient(135deg,#1a1614 0%,#4a4340 100%)','--btn-bg':'#1a1614','--btn-fg':'#faf8f4','--link':'#9a6128','--font-display':"'Playfair Display',Georgia,serif",'--font-body':"'Source Serif 4',Georgia,serif"}},
+  studio:{name:'Studio',desc:'Clean minimal',accent:'#0070f3',bg:'#ffffff',fontLinks:'https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=Epilogue:ital,wght@0,300;0,400;0,500;1,300&display=swap',vars:{'--bg':'#ffffff','--bg2':'#f5f5f5','--bg3':'#ebebeb','--fg':'#0a0a0a','--fg2':'#404040','--fg3':'#808080','--accent':'#0070f3','--accent2':'#0050b3','--accent3':'#e6f0ff','--border':'#e5e5e5','--nav-bg':'#0a0a0a','--card-bg':'#f5f5f5','--hero-bg':'#0a0a0a','--btn-bg':'#0a0a0a','--btn-fg':'#ffffff','--link':'#0070f3','--font-display':"'Syne',sans-serif",'--font-body':"'Epilogue',sans-serif"}},
+  dusk:{name:'Dusk',desc:'Warm amber',accent:'#f59e0b',bg:'#1c1410',fontLinks:'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300&family=Lora:ital,wght@0,400;0,500;1,400&display=swap',vars:{'--bg':'#1c1410','--bg2':'#251c16','--bg3':'#2e231b','--fg':'#f5e6d0','--fg2':'#c4a882','--fg3':'#8a6f52','--accent':'#f59e0b','--accent2':'#d97706','--accent3':'#2e1f0a','--border':'#3d2e20','--nav-bg':'#120e0a','--card-bg':'#251c16','--hero-bg':'linear-gradient(135deg,#120e0a 0%,#2e1f0a 100%)','--btn-bg':'#f59e0b','--btn-fg':'#120e0a','--link':'#f59e0b','--font-display':"'Fraunces',Georgia,serif",'--font-body':"'Lora',Georgia,serif"}},
+  blueprint:{name:'Blueprint',desc:'Technical mono',accent:'#4fc3f7',bg:'#0a1628',fontLinks:'https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap',vars:{'--bg':'#0a1628','--bg2':'#0d1f3c','--bg3':'#112850','--fg':'#a8c5e8','--fg2':'#6a97c4','--fg3':'#3d6a9e','--accent':'#4fc3f7','--accent2':'#0288d1','--accent3':'#0d2744','--border':'#1e3a5f','--nav-bg':'#060f1e','--card-bg':'#0d1f3c','--hero-bg':'linear-gradient(135deg,#060f1e 0%,#0d2744 100%)','--btn-bg':'#4fc3f7','--btn-fg':'#060f1e','--link':'#4fc3f7','--font-display':"'Space Mono',monospace",'--font-body':"'Space Mono',monospace"}},
+  neon:{name:'Neon',desc:'Dark vivid',accent:'#ff2d78',bg:'#0a0a0f',fontLinks:'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;1,300&display=swap',vars:{'--bg':'#0a0a0f','--bg2':'#12121a','--bg3':'#1a1a28','--fg':'#f0f0ff','--fg2':'#a0a0cc','--fg3':'#606080','--accent':'#ff2d78','--accent2':'#cc1a5c','--accent3':'#2a0a14','--border':'#2a2a40','--nav-bg':'#050508','--card-bg':'#12121a','--hero-bg':'linear-gradient(135deg,#050508 0%,#1a0a14 50%,#0a0a1a 100%)','--btn-bg':'#ff2d78','--btn-fg':'#050508','--link':'#ff2d78','--font-display':"'Bebas Neue',sans-serif",'--font-body':"'Barlow',sans-serif"}}
+};
+
+const SECTION_TYPES = {
+  hero:{icon:'⬛',name:'Hero',defaults:{title:'Welcome to My Site',subtitle:'A powerful tagline that explains what you do',btnText:'Get Started',btnLink:'#',btnShow:true,bgImage:'',overlay:true}},
+  text:{icon:'📝',name:'Text Block',defaults:{heading:'Section Heading',body:'Write your content here. This is a text block — you can add headings, body copy, and styled text.',align:'left'}},
+  twocol:{icon:'⬜',name:'Two Column',defaults:{leftHeading:'Left Column',leftBody:'Content for the left column goes here.',rightHeading:'Right Column',rightBody:'Content for the right column goes here.',leftImage:'',rightImage:'',ratio:'50/50'}},
+  image:{icon:'🖼',name:'Image',defaults:{src:'',alt:'Image description',caption:'',size:'contained',link:''}},
+  cards:{icon:'🃏',name:'Cards',defaults:{heading:'Our Features',cards:[{title:'Card One',body:'Description for card one.',icon:'⚡',link:''},{title:'Card Two',body:'Description for card two.',icon:'🎯',link:''},{title:'Card Three',body:'Description for card three.',icon:'🔥',link:''}],columns:3}},
+  cta:{icon:'📣',name:'Call to Action',defaults:{heading:'Ready to Get Started?',body:'Join thousands of users who trust our platform.',btnText:'Start Now',btnLink:'#',btnSecText:'Learn More',btnSecLink:'#',showSec:true}},
+  footer:{icon:'⬇',name:'Footer',defaults:{cols:[{heading:'Company',links:[{text:'About',href:'#'},{text:'Blog',href:'#'},{text:'Contact',href:'#'}]},{heading:'Product',links:[{text:'Features',href:'#'},{text:'Pricing',href:'#'},{text:'Docs',href:'#'}]}],copyright:'© 2026 My Company. All rights reserved.',showSocial:false}},
+  html:{icon:'</> ',name:'Custom HTML',defaults:{code:'<div style="padding:2rem;text-align:center"><p>Custom HTML block</p></div>'}}
+};
+
+let state = {
+  theme: 'forge',
+  layout: 'topnav',
+  siteTitle: 'My Site',
+  siteTagline: '',
+  siteCname: '',
+  pages: [{id:'home',title:'Home',filename:'index.html',desc:'',sections:[{id:uid(),type:'hero',data:{...SECTION_TYPES.hero.defaults}},{id:uid(),type:'text',data:{...SECTION_TYPES.text.defaults}},{id:uid(),type:'footer',data:{...SECTION_TYPES.footer.defaults}}]}],
+  currentPage: 'home',
+  currentSection: null,
+  editorMode: 'preview',
+  gh:{user:'',repo:'',token:''}
+};
+
+let modalConfirmAction = () => {};
+
+function uid(){ return Math.random().toString(36).substr(2,9); }
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+function init(){
+  const saved = localStorage.getItem('littlesoul_state');
+  if(saved){ try{ state = {...state,...JSON.parse(saved)}; }catch(e){} }
+  renderThemeGrid();
+  renderPageTabs();
+  renderSectionsList();
+  updateRightPanel();
+  renderPreview();
+  document.getElementById('siteTitle').value = state.siteTitle;
+  document.getElementById('siteTagline').value = state.siteTagline || '';
+  document.getElementById('siteCname').value = state.siteCname || '';
+  document.getElementById('ghUser').value = state.gh.user || '';
+  document.getElementById('ghRepo').value = state.gh.repo || '';
+  document.getElementById('ghToken').value = state.gh.token || '';
+}
+
+function save(){
+  state.gh.user = document.getElementById('ghUser').value;
+  state.gh.repo = document.getElementById('ghRepo').value;
+  state.gh.token = document.getElementById('ghToken').value;
+  state.siteTitle = document.getElementById('siteTitle').value;
+  state.siteTagline = document.getElementById('siteTagline').value;
+  state.siteCname = document.getElementById('siteCname').value;
+  localStorage.setItem('littlesoul_state', JSON.stringify(state));
+}
+
+// ═══════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════
+function renderThemeGrid(){
+  const el = document.getElementById('themeGrid');
+  el.innerHTML = Object.entries(THEMES).map(([k,t]) =>
+    `<button class="theme-btn ${state.theme===k?'active':''}" onclick="setTheme('${k}',this)">
+      <div class="theme-swatch" style="background:linear-gradient(90deg,${t.bg} 0%,${t.accent} 100%)"></div>
+      <span class="theme-btn-name">${t.name}</span>
+      <span class="theme-btn-desc">${t.desc}</span>
+    </button>`
+  ).join('');
+}
+
+function setTheme(key,btn){
+  state.theme = key;
+  document.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPreview();
+  save();
+}
+
+// ═══════════════════════════════════════════════
+// LAYOUT
+// ═══════════════════════════════════════════════
+function setLayout(key,btn){
+  state.layout = key;
+  document.querySelectorAll('.layout-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPreview();
+  save();
+}
+
+// ═══════════════════════════════════════════════
+// PAGES
+// ═══════════════════════════════════════════════
+function renderPageTabs(){
+  const el = document.getElementById('pageTabs');
+  el.innerHTML = state.pages.map(p =>
+    `<button class="page-tab ${state.currentPage===p.id?'active':''}" onclick="switchPage('${p.id}')">${p.title}</button>`
+  ).join('');
+}
+
+function switchPage(id){
+  state.currentPage = id;
+  state.currentSection = null;
+  renderPageTabs();
+  renderSectionsList();
+  updateRightPanel();
+  renderPreview();
+  setEditorMode('preview');
+}
+
+function addPage(){
+  const id = uid();
+  const n = state.pages.length + 1;
+  state.pages.push({id,title:`Page ${n}`,filename:`page-${n}.html`,desc:'',sections:[
+    {id:uid(),type:'text',data:{heading:`Page ${n}`,body:'Content for this page.',align:'left'}},
+    {id:uid(),type:'footer',data:{...SECTION_TYPES.footer.defaults}}
+  ]});
+  state.currentPage = id;
+  renderPageTabs();
+  renderSectionsList();
+  updateRightPanel();
+  renderPreview();
+  save();
+}
+
+function deletePage(){
+  if(state.pages.length <= 1){ alert('Cannot delete the only page.'); return; }
+  state.pages = state.pages.filter(p=>p.id!==state.currentPage);
+  state.currentPage = state.pages[0].id;
+  renderPageTabs();
+  renderSectionsList();
+  updateRightPanel();
+  renderPreview();
+  save();
+}
+
+function updatePageTitle(v){
+  const p = state.pages.find(p=>p.id===state.currentPage);
+  if(p){ p.title = v; renderPageTabs(); save(); }
+}
+
+function updateSiteTitle(v){
+  state.siteTitle = v;
+  renderPreview();
+  save();
+}
+
+function updateRightPanel(){
+  const p = state.pages.find(p=>p.id===state.currentPage);
+  if(!p) return;
+  document.getElementById('pageTitle').value = p.title;
+  document.getElementById('pageFilename').value = p.filename;
+  document.getElementById('pageDesc').value = p.desc || '';
+}
+
+// ═══════════════════════════════════════════════
+// SECTIONS
+// ═══════════════════════════════════════════════
+function currentPage(){ return state.pages.find(p=>p.id===state.currentPage); }
+
+function renderSectionsList(){
+  const p = currentPage();
+  if(!p) return;
+  const el = document.getElementById('sectionsList');
+  el.innerHTML = p.sections.map((s,i) => {
+    const t = SECTION_TYPES[s.type];
+    return `<div class="section-item ${state.currentSection===s.id?'active':''}" onclick="selectSection('${s.id}')">
+      <div class="section-item-header">
+        <span class="section-drag">⣿</span>
+        <span class="section-type-icon">${t.icon}</span>
+        <span class="section-type-name">${t.name}</span>
+        <div class="section-actions">
+          <button class="section-action-btn" onclick="event.stopPropagation();moveSectionUp(${i})" title="Move up">↑</button>
+          <button class="section-action-btn" onclick="event.stopPropagation();moveSectionDown(${i})" title="Move down">↓</button>
+          <button class="section-action-btn" onclick="event.stopPropagation();deleteSection('${s.id}')" title="Delete" style="color:#ef4444">✕</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addSection(type){
+  const p = currentPage();
+  if(!p) return;
+  const s = {id:uid(),type,data:{...SECTION_TYPES[type].defaults}};
+  if(type==='cards') s.data.cards = s.data.cards.map(c=>({...c}));
+  const footerIdx = p.sections.findIndex(s=>s.type==='footer');
+  if(footerIdx > -1) p.sections.splice(footerIdx,0,s);
+  else p.sections.push(s);
+  state.currentSection = s.id;
+  renderSectionsList();
+  renderEditPanel();
+  renderPreview();
+  save();
+}
+
+function selectSection(id){
+  state.currentSection = id;
+  renderSectionsList();
+  setEditorMode('edit');
+}
+
+function moveSectionUp(i){
+  const p = currentPage();
+  if(i===0) return;
+  [p.sections[i-1],p.sections[i]] = [p.sections[i],p.sections[i-1]];
+  renderSectionsList();
+  renderPreview();
+  save();
+}
+
+function moveSectionDown(i){
+  const p = currentPage();
+  if(i>=p.sections.length-1) return;
+  [p.sections[i],p.sections[i+1]] = [p.sections[i+1],p.sections[i]];
+  renderSectionsList();
+  renderPreview();
+  save();
+}
+
+function deleteSection(id){
+  const p = currentPage();
+  p.sections = p.sections.filter(s=>s.id!==id);
+  if(state.currentSection===id) state.currentSection = null;
+  renderSectionsList();
+  renderEditPanel();
+  renderPreview();
+  save();
+}
+
+// ═══════════════════════════════════════════════
+// EDITOR MODE
+// ═══════════════════════════════════════════════
+function setEditorMode(mode){
+  state.editorMode = mode;
+  document.getElementById('editModeBtn').classList.toggle('active', mode==='edit');
+  document.getElementById('previewModeBtn').classList.toggle('active', mode==='preview');
+  document.getElementById('previewWrap').style.display = mode==='preview' ? 'block' : 'none';
+  document.getElementById('editPanel').style.display = mode==='edit' ? 'block' : 'none';
+  if(mode==='edit') renderEditPanel();
+  if(mode==='preview') renderPreview();
+}
+
+function toggleMode(){
+  setEditorMode(state.editorMode==='preview'?'edit':'preview');
+}
+
+// ═══════════════════════════════════════════════
+// EDIT PANEL
+// ═══════════════════════════════════════════════
+function renderEditPanel(){
+  const ep = document.getElementById('editPanel');
+  if(!state.currentSection){ ep.innerHTML = '<p style="color:var(--app-text3);font-size:.75rem;padding:1rem">Select a section from the left panel to edit it.</p>'; return; }
+  const p = currentPage();
+  const s = p.sections.find(s=>s.id===state.currentSection);
+  if(!s) return;
+  let html = `<div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--app-accent);letter-spacing:.1em;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--app-border)">${SECTION_TYPES[s.type].icon} ${SECTION_TYPES[s.type].name.toUpperCase()}</div>`;
+  switch(s.type){
+    case 'hero': html += heroForm(s.data); break;
+    case 'text': html += textForm(s.data); break;
+    case 'twocol': html += twocolForm(s.data); break;
+    case 'image': html += imageForm(s.data); break;
+    case 'cards': html += cardsForm(s.data); break;
+    case 'cta': html += ctaForm(s.data); break;
+    case 'footer': html += footerForm(s.data); break;
+    case 'html': html += htmlForm(s.data); break;
+  }
+  ep.innerHTML = html;
+}
+
+function field(label,id,val,type='text',placeholder=''){
+  return `<div class="field-group"><label class="field-label">${label}</label><input class="field-input" type="${type}" id="f_${id}" value="${esc(val)}" placeholder="${placeholder}" oninput="updateField('${id}',this.value)"></div>`;
+}
+function textarea(label,id,val,placeholder=''){
+  return `<div class="field-group"><label class="field-label">${label}</label><textarea class="field-textarea" id="f_${id}" placeholder="${placeholder}" oninput="updateField('${id}',this.value)">${esc(val)}</textarea></div>`;
+}
+function select(label,id,val,options){
+  return `<div class="field-group"><label class="field-label">${label}</label><select class="field-select" id="f_${id}" onchange="updateField('${id}',this.value)">${options.map(o=>`<option value="${o.v}" ${val===o.v?'selected':''}>${o.l}</option>`).join('')}</select></div>`;
+}
+function checkbox(label,id,val){
+  return `<div class="field-group" style="display:flex;align-items:center;gap:.5rem"><input type="checkbox" id="f_${id}" ${val?'checked':''} onchange="updateField('${id}',this.checked)"><label class="field-label" for="f_${id}" style="margin:0;cursor:pointer">${label}</label></div>`;
+}
+function esc(v){ return String(v||'').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function heroForm(d){
+  return field('TITLE','title',d.title)
+       + field('SUBTITLE','subtitle',d.subtitle)
+       + checkbox('SHOW BUTTON','btnShow',d.btnShow)
+       + field('BUTTON TEXT','btnText',d.btnText)
+       + field('BUTTON LINK','btnLink',d.btnLink)
+       + field('BACKGROUND IMAGE URL','bgImage',d.bgImage,'text','https://...')
+       + checkbox('DARK OVERLAY','overlay',d.overlay);
+}
+function textForm(d){
+  return field('HEADING','heading',d.heading)
+       + textarea('BODY','body',d.body)
+       + select('ALIGNMENT','align',d.align,[{v:'left',l:'Left'},{v:'center',l:'Center'},{v:'right',l:'Right'}]);
+}
+function twocolForm(d){
+  return `<div style="font-size:.6rem;color:var(--app-text3);margin-bottom:.5rem">LEFT COLUMN</div>`
+       + field('HEADING','leftHeading',d.leftHeading)
+       + textarea('BODY','leftBody',d.leftBody)
+       + field('IMAGE URL','leftImage',d.leftImage,'text','https://...')
+       + `<div style="font-size:.6rem;color:var(--app-text3);margin:.5rem 0">RIGHT COLUMN</div>`
+       + field('HEADING','rightHeading',d.rightHeading)
+       + textarea('BODY','rightBody',d.rightBody)
+       + field('IMAGE URL','rightImage',d.rightImage,'text','https://...')
+       + select('RATIO','ratio',d.ratio,[{v:'50/50',l:'50/50'},{v:'60/40',l:'60/40'},{v:'40/60',l:'40/60'},{v:'70/30',l:'70/30'},{v:'30/70',l:'30/70'}]);
+}
+function imageForm(d){
+  return field('IMAGE URL','src',d.src,'text','https://...')
+       + field('ALT TEXT','alt',d.alt)
+       + field('CAPTION','caption',d.caption)
+       + field('LINK URL','link',d.link,'text','https://...')
+       + select('SIZE','size',d.size,[{v:'contained',l:'Contained'},{v:'full',l:'Full Width'}]);
+}
+function cardsForm(d){
+  let html = field('SECTION HEADING','heading',d.heading)
+           + select('COLUMNS','columns',d.columns,[{v:2,l:'2 Columns'},{v:3,l:'3 Columns'},{v:4,l:'4 Columns'}]);
+  d.cards.forEach((c,i)=>{
+    html += `<div style="background:var(--app-surface2);border:1px solid var(--app-border);padding:.6rem;border-radius:3px;margin-bottom:.5rem">
+      <div style="font-size:.58rem;color:var(--app-text3);margin-bottom:.4rem">CARD ${i+1}</div>
+      ${field(`TITLE`,`card_${i}_title`,c.title)}
+      ${textarea(`BODY`,`card_${i}_body`,c.body)}
+      ${field(`ICON/EMOJI`,`card_${i}_icon`,c.icon)}
+      ${field(`LINK`,`card_${i}_link`,c.link)}
+    </div>`;
+  });
+  html += `<button class="btn btn-ghost" style="width:100%;font-size:.65rem" onclick="addCard()">+ ADD CARD</button>`;
+  return html;
+}
+function ctaForm(d){
+  return field('HEADING','heading',d.heading)
+       + textarea('BODY','body',d.body)
+       + field('PRIMARY BUTTON TEXT','btnText',d.btnText)
+       + field('PRIMARY BUTTON LINK','btnLink',d.btnLink)
+       + checkbox('SHOW SECONDARY BUTTON','showSec',d.showSec)
+       + field('SECONDARY BUTTON TEXT','btnSecText',d.btnSecText)
+       + field('SECONDARY BUTTON LINK','btnSecLink',d.btnSecLink);
+}
+function footerForm(d){
+  return field('COPYRIGHT TEXT','copyright',d.copyright)
+       + checkbox('SHOW SOCIAL LINKS','showSocial',d.showSocial);
+}
+function htmlForm(d){
+  return textarea('CUSTOM HTML','code',d.code,'<div>Your HTML here</div>');
+}
+
+function updateField(key,val){
+  const p = currentPage();
+  const s = p.sections.find(s=>s.id===state.currentSection);
+  if(!s) return;
+  if(key.startsWith('card_')){
+    const parts = key.split('_');
+    const idx = parseInt(parts[1]);
+    const field = parts.slice(2).join('_');
+    s.data.cards[idx][field] = val;
+  } else {
+    s.data[key] = val;
+  }
+  renderPreview();
+  save();
+}
+
+function addCard(){
+  const p = currentPage();
+  const s = p.sections.find(s=>s.id===state.currentSection);
+  if(!s||s.type!=='cards') return;
+  s.data.cards.push({title:'New Card',body:'Card description.',icon:'⭐',link:''});
+  renderEditPanel();
+  renderPreview();
+  save();
+}
+
+// ═══════════════════════════════════════════════
+// PREVIEW GENERATION
+// ═══════════════════════════════════════════════
+function renderPreview(){
+  const frame = document.getElementById('previewFrame');
+  const p = currentPage();
+  if(!p) return;
+  const html = generatePageHTML(p, true);
+  frame.srcdoc = html;
+}
+
+function generatePageHTML(page, isPreview=false){
+  const theme = THEMES[state.theme];
+  const allPages = state.pages;
+  const cssVars = Object.entries(theme.vars).map(([k,v])=>`${k}:${v}`).join(';');
+
+  const navLinks = allPages.map(p =>
+    `<a href="${isPreview?'#':''+p.filename}" style="color:var(--fg2);text-decoration:none;font-size:.85rem;padding:.25rem .5rem;transition:.15s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--fg2)'">${p.title}</a>`
+  ).join('');
+
+  const nav = `<nav style="background:var(--nav-bg);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+    <span style="font-family:var(--font-display);font-size:1.1rem;color:var(--accent);letter-spacing:.05em">${state.siteTitle}</span>
+    <div style="display:flex;gap:.5rem">${navLinks}</div>
+  </nav>`;
+
+  const sidebarNav = `<aside style="width:200px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);padding:1.5rem 1rem;min-height:calc(100vh - 53px)">
+    <div style="font-family:var(--font-display);font-size:.8rem;color:var(--accent);margin-bottom:1rem;letter-spacing:.05em">${state.siteTitle}</div>
+    ${allPages.map(p=>`<a href="${isPreview?'#':''+p.filename}" style="display:block;color:var(--fg2);text-decoration:none;font-size:.85rem;padding:.4rem .5rem;margin-bottom:.15rem;border-radius:3px;transition:.15s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='transparent'">${p.title}</a>`).join('')}
+  </aside>`;
+
+  const sectionsHTML = page.sections.map(s => renderSection(s, theme)).join('\n');
+
+  let bodyContent;
+  switch(state.layout){
+    case 'sidebar-left':
+      bodyContent = `${nav}<div style="display:flex">${sidebarNav}<main style="flex:1;overflow:auto">${sectionsHTML}</main></div>`;
+      break;
+    case 'sidebar-right':
+      bodyContent = `${nav}<div style="display:flex"><main style="flex:1;overflow:auto">${sectionsHTML}</main>${sidebarNav}</div>`;
+      break;
+    case 'fullwidth':
+      bodyContent = sectionsHTML;
+      break;
+    case 'landing':
+      bodyContent = sectionsHTML;
+      break;
+    case 'docs':
+      bodyContent = `${nav}<div style="display:flex"><aside style="width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);padding:1.5rem 1rem;min-height:calc(100vh - 53px)">${allPages.map(p=>`<a href="${isPreview?'#':''+p.filename}" style="display:block;color:var(--fg2);text-decoration:none;font-size:.83rem;padding:.35rem .5rem;margin-bottom:.1rem;border-left:2px solid transparent;transition:.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--fg)'" onmouseout="this.style.borderColor='transparent';this.style.color='var(--fg2)'">${p.title}</a>`).join('')}</aside><main style="flex:1;max-width:740px;margin:0 auto;padding:2rem">${sectionsHTML}</main></div>`;
+      break;
+    default: // topnav
+      bodyContent = `${nav}<main>${sectionsHTML}</main>`;
+  }
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>${page.title} — ${state.siteTitle}</title>
+<meta name="description" content="${esc(page.desc||state.siteTagline||'')}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="${theme.fontLinks}" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{${cssVars}}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);line-height:1.75;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--font-display);line-height:1.2}
+a{color:var(--link)}
+img{max-width:100%;height:auto;display:block}
+</style>
+</head>
+<body>${bodyContent}</body>
+</html>`;
+}
+
+function renderSection(s, theme){
+  const d = s.data;
+  switch(s.type){
+    case 'hero': return `
+      <section style="background:${d.bgImage?`url('${d.bgImage}') center/cover`:'var(--hero-bg)'};padding:5rem 2rem;text-align:center;position:relative">
+        ${d.bgImage&&d.overlay?'<div style="position:absolute;inset:0;background:rgba(0,0,0,.5)"></div>':''}
+        <div style="position:relative;max-width:800px;margin:0 auto">
+          <h1 style="font-size:clamp(2rem,6vw,4rem);color:var(--fg);margin-bottom:1rem;letter-spacing:-.02em">${esc(d.title)}</h1>
+          <p style="font-size:1.2rem;color:var(--fg2);margin-bottom:2rem;font-weight:300">${esc(d.subtitle)}</p>
+          ${d.btnShow?`<a href="${d.btnLink}" style="display:inline-block;background:var(--btn-bg);color:var(--btn-fg);padding:.75rem 2rem;text-decoration:none;font-size:.9rem;letter-spacing:.1em;font-family:var(--font-display);transition:.15s">${esc(d.btnText)}</a>`:''}
+        </div>
+      </section>`;
+    case 'text': return `
+      <section style="padding:4rem 2rem;max-width:840px;margin:0 auto;text-align:${d.align}">
+        ${d.heading?`<h2 style="font-size:2rem;color:var(--fg);margin-bottom:1rem;border-bottom:2px solid var(--accent);padding-bottom:.5rem;display:inline-block">${esc(d.heading)}</h2>`:''}
+        <p style="font-size:1rem;color:var(--fg2);line-height:1.85">${esc(d.body).replace(/\n/g,'<br>')}</p>
+      </section>`;
+    case 'twocol': {
+      const ratio = (d.ratio||'50/50').split('/');
+      const l = parseInt(ratio[0]), r = parseInt(ratio[1]);
+      return `<section style="padding:4rem 2rem;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:${l}fr ${r}fr;gap:3rem;align-items:start">
+        <div>
+          ${d.leftImage?`<img src="${d.leftImage}" alt="" style="margin-bottom:1rem;border-radius:4px">`:''}
+          ${d.leftHeading?`<h2 style="font-size:1.6rem;color:var(--fg);margin-bottom:.75rem">${esc(d.leftHeading)}</h2>`:''}
+          <p style="color:var(--fg2);line-height:1.8">${esc(d.leftBody).replace(/\n/g,'<br>')}</p>
+        </div>
+        <div>
+          ${d.rightImage?`<img src="${d.rightImage}" alt="" style="margin-bottom:1rem;border-radius:4px">`:''}
+          ${d.rightHeading?`<h2 style="font-size:1.6rem;color:var(--fg);margin-bottom:.75rem">${esc(d.rightHeading)}</h2>`:''}
+          <p style="color:var(--fg2);line-height:1.8">${esc(d.rightBody).replace(/\n/g,'<br>')}</p>
+        </div>
+      </section>`;
+    }
+    case 'image': return `
+      <section style="padding:${d.size==='full'?'0':'2rem'}">
+        ${d.link?`<a href="${d.link}">`:''}
+        <img src="${d.src}" alt="${esc(d.alt)}" style="width:100%;${d.size==='contained'?'max-width:900px;margin:0 auto;border-radius:6px':''}">
+        ${d.link?'</a>':''}
+        ${d.caption?`<p style="text-align:center;color:var(--fg3);font-size:.8rem;margin-top:.75rem;font-style:italic">${esc(d.caption)}</p>`:''}
+      </section>`;
+    case 'cards': {
+      const cols = d.columns || 3;
+      return `<section style="padding:4rem 2rem;max-width:1100px;margin:0 auto">
+        ${d.heading?`<h2 style="font-size:2rem;color:var(--fg);margin-bottom:2rem;text-align:center">${esc(d.heading)}</h2>`:''}
+        <div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:1.5rem">
+          ${(d.cards||[]).map(c=>`<div style="background:var(--card-bg);border:1px solid var(--border);padding:1.75rem;border-radius:4px;transition:.2s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+            ${c.icon?`<div style="font-size:2rem;margin-bottom:.75rem">${c.icon}</div>`:''}
+            <h3 style="font-size:1.1rem;color:var(--fg);margin-bottom:.5rem">${esc(c.title)}</h3>
+            <p style="font-size:.9rem;color:var(--fg2);line-height:1.7">${esc(c.body)}</p>
+            ${c.link?`<a href="${c.link}" style="display:inline-block;margin-top:1rem;font-size:.8rem;color:var(--accent);text-decoration:none">Learn more →</a>`:''}
+          </div>`).join('')}
+        </div>
+      </section>`;
+    }
+    case 'cta': return `
+      <section style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:5rem 2rem;text-align:center">
+        <div style="max-width:600px;margin:0 auto">
+          <h2 style="font-size:2.2rem;color:var(--fg);margin-bottom:1rem">${esc(d.heading)}</h2>
+          <p style="color:var(--fg2);margin-bottom:2rem;font-size:1.05rem">${esc(d.body)}</p>
+          <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+            <a href="${d.btnLink}" style="background:var(--btn-bg);color:var(--btn-fg);padding:.75rem 2rem;text-decoration:none;font-size:.9rem;letter-spacing:.08em;font-family:var(--font-display)">${esc(d.btnText)}</a>
+            ${d.showSec?`<a href="${d.btnSecLink}" style="border:1px solid var(--border);color:var(--fg2);padding:.75rem 2rem;text-decoration:none;font-size:.9rem;letter-spacing:.08em;font-family:var(--font-display)">${esc(d.btnSecText)}</a>`:''}
+          </div>
+        </div>
+      </section>`;
+    case 'footer': return `
+      <footer style="background:var(--nav-bg);border-top:1px solid var(--border);padding:3rem 2rem 1.5rem">
+        <div style="max-width:1100px;margin:0 auto">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:2rem;margin-bottom:2rem">
+            ${(d.cols||[]).map(col=>`<div>
+              <h4 style="font-size:.75rem;letter-spacing:.15em;color:var(--fg3);margin-bottom:.75rem;text-transform:uppercase">${esc(col.heading)}</h4>
+              ${(col.links||[]).map(l=>`<a href="${l.href}" style="display:block;color:var(--fg2);text-decoration:none;font-size:.85rem;margin-bottom:.35rem;transition:.15s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--fg2)'">${esc(l.text)}</a>`).join('')}
+            </div>`).join('')}
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:1.25rem;font-size:.75rem;color:var(--fg3)">${esc(d.copyright)}</div>
+        </div>
+      </footer>`;
+    case 'html': return d.code || '';
+    default: return '';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// PUBLISH
+// ═══════════════════════════════════════════════
+async function publishSite(){
+  save();
+  const user = document.getElementById('ghUser').value.trim();
+  const repo = document.getElementById('ghRepo').value.trim();
+  const token = document.getElementById('ghToken').value.trim();
+  if(!user||!repo||!token){ setStatus('error','MISSING GITHUB CREDENTIALS'); return; }
+  setStatus('publishing','PUBLISHING...');
+  try{
+    let count = 0;
+    for(const page of state.pages){
+      const content = generatePageHTML(page, false);
+      const filename = page.filename || 'index.html';
+      await pushFile(user, repo, token, filename, content, `Update ${filename} via Little Soul`);
+      count++;
+      setStatus('publishing', `PUBLISHING... ${count}/${state.pages.length}`);
+    }
+    // CNAME
+    const cname = document.getElementById('siteCname').value.trim();
+    if(cname) await pushFile(user, repo, token, 'CNAME', cname+'\n', 'Update CNAME via Little Soul');
+    setStatus('success', `✓ PUBLISHED ${count} PAGE${count>1?'S':''}!`);
+    setTimeout(()=>setStatus('idle','READY'),5000);
+  } catch(e){
+    setStatus('error', 'ERROR: '+e.message);
+  }
+}
+
+async function pushFile(user,repo,token,path,content,message){
+  const encoded = btoa(unescape(encodeURIComponent(content)));
+  // Check if file exists to get SHA
+  let sha = null;
+  try{
+    const r = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${path}`,{headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}});
+    if(r.ok){ const d = await r.json(); sha = d.sha; }
+  }catch(e){}
+  const body = {message,content:encoded};
+  if(sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${path}`,{method:'PUT',headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!r.ok){ const e = await r.json(); throw new Error(e.message||'GitHub API error'); }
+}
+
+function setStatus(type,msg){
+  const el = document.getElementById('publishStatus');
+  el.className = `publish-status status-${type}`;
+  el.textContent = msg;
+}
+
+// ═══════════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════════
+function exportZip(){
+  // Export all pages as individual HTML downloads
+  state.pages.forEach(page => {
+    const html = generatePageHTML(page, false);
+    const blob = new Blob([html], {type:'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = page.filename || 'index.html';
+    a.click();
+  });
+}
+
+// ═══════════════════════════════════════════════
+// SETTINGS MODAL
+// ═══════════════════════════════════════════════
+function showSettings(){
+  document.getElementById('modalTitle').textContent = 'SETTINGS';
+  document.getElementById('modalBody').innerHTML = `<p style="font-size:.8rem;color:var(--app-text2)">Configure GitHub credentials and site settings in the right panel.</p>`;
+  document.getElementById('modalConfirm').textContent = 'OK';
+  modalConfirmAction = closeModal;
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal(){
+  document.getElementById('modal').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════
+// KEYBOARD
+// ═══════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if((e.metaKey||e.ctrlKey) && e.key==='s'){ e.preventDefault(); save(); renderPreview(); }
+  if(e.key==='Escape') closeModal();
+});
+
+// ═══════════════════════════════════════════════
+// AUTO-SAVE INPUTS
+// ═══════════════════════════════════════════════
+['ghUser','ghRepo','ghToken','siteCname','siteTagline','pageDesc','pageFilename'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('change', ()=>{
+    const p = currentPage();
+    if(p){
+      p.desc = document.getElementById('pageDesc').value;
+      p.filename = document.getElementById('pageFilename').value;
+    }
+    save();
+    renderPreview();
+  });
+});
+
+init();
+</script>
+</body>
+</html>
